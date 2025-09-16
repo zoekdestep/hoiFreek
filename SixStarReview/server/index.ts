@@ -61,11 +61,31 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
+  // attempt to listen with reusePort when supported; if the platform
+  // doesn't support it we'll retry without reusePort to avoid crashing
+  const listenWithFallback = () => {
+    const onError = (err: any) => {
+      // if reusePort isn't supported, retry without it
+      if (err && err.code === "ENOTSUP") {
+        log("reusePort not supported on this platform; retrying without reusePort");
+        server.off("error", onError);
+        server.listen(port, "0.0.0.0", () => {
+          log(`serving on port ${port}`);
+        });
+      } else {
+        // re-throw other errors so they surface
+        throw err;
+      }
+    };
+
+    server.on("error", onError);
+
+    // first try: use reusePort for better load distribution where available
+    server.listen({ port, host: "0.0.0.0", reusePort: true }, () => {
+      server.off("error", onError);
+      log(`serving on port ${port}`);
+    });
+  };
+
+  listenWithFallback();
 })();
