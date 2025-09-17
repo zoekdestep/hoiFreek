@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/451c83f5-4265-425a-9b44-c12bc2d76801/resourceGroups/stvitestresourcegroup76584/providers/Microsoft.Web/sites/stvi-marveloustestapp-7594887756",
+    "appService.deploySubpath": "."
+}
