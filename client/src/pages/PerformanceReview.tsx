@@ -112,7 +112,7 @@ export default function PerformanceReview() {
         
         <div className="text-center py-8">
           <p className="text-sm text-muted-foreground italic" data-testid="text-footer">
-            "This performance review was generated with love, humor, and way too much corporate jargon." 💼✨
+            Proudly built by STVI Corp™️.
           </p>
         </div>
       </div>
